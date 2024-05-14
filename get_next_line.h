@@ -24,11 +24,9 @@
 # include <unistd.h>
 
 char	*get_next_line(int fd);
-void	*read_in_line(int fd, char *line);
-int		pos_newline(char *str);
-int		ft_strlen(char *s);
-char	*ft_strjoin(char *s1, char *s2, int *n);
-char	*extract_line(char *s, int len);
-char	*extract_reste(char *line);
-void	free_ptr(char **str);
+size_t	ft_strlen(char *s);
+char	*ft_strjoin(char *s1, char *s2);
+char	*ft_strdup(char *src);
+void	ft_strcpy(char *dst, char *src);
+char	*ft_strchr(char *s, int c);
 #endif

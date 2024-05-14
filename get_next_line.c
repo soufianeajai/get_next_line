@@ -12,80 +12,45 @@
 
 #include"get_next_line.h"
 
-int	pos_newline(char	*str)
-{
-	int	i;
 
-	i = 0;
-	if (!str)
-		return (-1);
-	while (str[i])
-	{
-		if (str[i] == '\n')
-			return (i);
-		i++;
-	}
-	return (-1);
-}
+// char	*get_next_line(int fd)
+// {
+// 	static char	buf[BUFFER_SIZE + 1];
+// 	char		*line;
+// 	char		*newline = 0;
+// 	int			countread;
+// 	int			to_copy;
 
-void	*read_in_line(int fd, char *line)
-{
-	int		rd;
-	int		n;
-	char	*buf;
+// 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, buf, 0) < 0)
+// 		return (NULL);
+// 	line = ft_strdup(buf);
+// 	while (!(newline = ft_strchr(line, '\n')) && (countread = read(fd, buf, BUFFER_SIZE)))
+// 	{
+// 		buf[countread] = '\0';
+// 		line = ft_strjoin(line, buf);
+// 	}
+// 	if (ft_strlen(line) == 0)
+// 		return (free(line), NULL);
+// // case found newline
+// 	if (newline)
+// 	{
+// 		to_copy = newline - line;
+// 		ft_strcpy(buf, newline);
+// 	}
+// // case no newline
+// 	else
+// 	{
+// 		to_copy = ft_strlen(line);
+// 		buf[0] = '\0';
+// 	}
+// 	line[to_copy] = '\0';
+// 	return (line);
+// }
 
-	rd = BUFFER_SIZE;
-	n = -1;
-	while (n == -1)
-	{
-		buf = malloc(BUFFER_SIZE + 1);
-		if (!buf)
-			return (0);
-		rd = read(fd, buf, BUFFER_SIZE);
-		if (rd <= 0)
-		{
-			free_ptr(&buf);
-			break ;
-		}
-		buf[rd] = '\0';
-		line = ft_strjoin(line, buf, &n);
-		free_ptr(&buf);
-	}
-	return (line);
-}
 
-char	*get_next_line(int fd)
-{
-	char		*line1;
-	char		*line;
-	int			readed;
-	static char	*reste = 0;
 
-	line1 = 0;
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line1, 0) < 0)
-	{
-		free_ptr(&reste);
-		return (NULL);
-	}
-	if (reste)
-	{
-		line1 = ft_strjoin(0, reste, &readed);
-		free_ptr(&reste);
-	}
-	line1 = read_in_line(fd, line1);
-	if (!line1)
-		return (0);
-	reste = extract_reste(line1);
-	line = extract_line(line1, (pos_newline(line1) + 1));
-	free_ptr(&line1);
-	return (line);
-}
 
-void	free_ptr(char **str)
-{
-	free (*str);
-	*str = 0;
-}
+
 /*
  int main()
  {	
@@ -108,3 +73,39 @@ void	free_ptr(char **str)
  	close(fd);
  	return (0);
  }*/
+
+
+char *get_next_line(int fd)
+{
+	int rd;
+	char *line;
+	static char buf[BUFFER_SIZE + 1];
+	char *newline = 0;
+	int len_line;
+
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, buf, 0) < 0)
+	{
+		buf[0] = 0;
+		return (0);
+	}
+	line = ft_strdup(buf);
+	while (!(newline = ft_strchr(line, '\n')) && (rd = read(fd, buf, BUFFER_SIZE)))
+	{
+		buf[rd] = 0;
+		line = ft_strjoin(line, buf);
+	}
+	if (ft_strlen(line) == 0)
+		return (free(line), NULL);
+	if (newline)
+	{
+		len_line = newline - line;
+		ft_strcpy(buf, newline);
+	}
+	else
+	{
+		len_line = ft_strlen(line);
+		buf[0] = 0;
+	}
+	line[len_line] = 0;
+	return (line);
+} 
